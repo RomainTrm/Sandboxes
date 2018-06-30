@@ -1,0 +1,6 @@
+C:\Workspace\CSharpSandbox\CSharpSandbox\bin\Debug\CSharpSandbox.dll
+C:\Workspace\CSharpSandbox\CSharpSandbox\bin\Debug\CSharpSandbox.pdb
+C:\Workspace\CSharpSandbox\CSharpSandbox\obj\Debug\CSharpSandbox.csprojResolveAssemblyReference.cache
+C:\Workspace\CSharpSandbox\CSharpSandbox\obj\Debug\CSharpSandbox.csproj.CoreCompileInputs.cache
+C:\Workspace\CSharpSandbox\CSharpSandbox\obj\Debug\CSharpSandbox.dll
+C:\Workspace\CSharpSandbox\CSharpSandbox\obj\Debug\CSharpSandbox.pdb
