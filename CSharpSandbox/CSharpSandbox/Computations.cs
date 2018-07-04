@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using NFluent;
+using NUnit.Framework;
 
 namespace CSharpSandbox
 {
@@ -112,7 +114,7 @@ namespace CSharpSandbox
 
     public class Computation
     {
-        public static Maybe<int> Add(Maybe<int> maybeX, Maybe<int> maybeY)
+        public static Maybe<int> AddLinq(Maybe<int> maybeX, Maybe<int> maybeY)
         {
             return
                 from x in maybeX
@@ -123,8 +125,69 @@ namespace CSharpSandbox
         public static Maybe<int> AddFluent(Maybe<int> maybeX, Maybe<int> maybeY)
         {
             return maybeX.Bind(justX =>
-                        maybeY.Bind(
-                            justY => new Just<int>(justX + justY)));
+                        maybeY.Bind(justY => 
+                            new Just<int>(justX + justY)));
+        }
+
+        public static Maybe<int> AddExtensions(Maybe<int> maybeX, Maybe<int> maybeY)
+        {
+            return maybeX.SelectMany(x => maybeY, (x, y) => x + y);
+        }
+
+        public static Maybe<string> ToStringLinq(Maybe<int> maybe)
+        {
+            return
+                from value in maybe
+                select value.ToString();
+        }
+
+        public static Maybe<string> ToStringFluent(Maybe<int> maybe)
+        {
+            return maybe.Bind(value => new Just<string>(value.ToString()));
+        }
+
+        public static Maybe<string> ToStringExtensions(Maybe<int> maybe)
+        {
+            return maybe.Select(value => value.ToString());
+        }
+    }
+
+    [TestFixture]
+    public class ComputationsTests
+    {
+        private static readonly (Maybe<int> maybeX, Maybe<int> maybeY, Maybe<int> result)[] AdditionTestCases = {
+            (new Just<int>(5), new Just<int>(4), new Just<int>(9)),
+            (new Just<int>(5), new None<int>(), new None<int>()),
+            (new None<int>(), new Just<int>(5), new None<int>()),
+            (new None<int>(), new None<int>(), new None<int>())
+        };
+
+        [Test]
+        [TestCaseSource(nameof(AdditionTestCases))]
+        public void Addition((Maybe<int> maybeX, Maybe<int> maybeY, Maybe<int> result) testCase)
+        {
+            Check
+                .That(Computation.AddLinq(testCase.maybeX, testCase.maybeY))
+                .IsEqualTo(Computation.AddFluent(testCase.maybeX, testCase.maybeY))
+                .And.IsEqualTo(Computation.AddExtensions(testCase.maybeX, testCase.maybeY))
+                .And.IsEqualTo(testCase.result);
+        }
+
+
+        private static readonly (Maybe<int> input, Maybe<string> output)[] ToStringTestCases = {
+            (new Just<int>(5), new Just<string>("5")),
+            (new None<int>(),new None<string>())
+        };
+
+        [Test]
+        [TestCaseSource(nameof(ToStringTestCases))]
+        public void ToString((Maybe<int> input, Maybe<string> output) testCase)
+        {
+            Check
+                .That(Computation.ToStringLinq(testCase.input))
+                .IsEqualTo(Computation.ToStringFluent(testCase.input))
+                .And.IsEqualTo(Computation.ToStringExtensions(testCase.input))
+                .And.IsEqualTo(testCase.output);
         }
     }
 }
