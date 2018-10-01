@@ -35,6 +35,10 @@ module Applicative =
         y_if_x_else_z_lifted [true] ["y result"] []
         // Return [["y result"]]
 
+        apply (apply (pure add) (apply (apply (pure add) [1; 2]) [3; 4])) [5; 6]
+        // [1 + 3 + 5; 1 + 3 + 6; 1 + 4 + 5; 1 + 4 + 6; 2 + 3 + 5; 2 + 3 + 6; 2 + 4 + 5; 2 + 4 + 6]
+        // Return [9; 10; 10; 11; 10; 11; 11; 12]
+
     // Applicative.``An applicative functor is a function`` ()
     let ``An applicative functor is a function`` () = 
         let mapFunction funtion1 funtion2 = funtion1 >> funtion2
