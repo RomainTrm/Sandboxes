@@ -13,35 +13,36 @@ module Applicative =
         let pure = fun x -> [x]
         let apply wrappedFunction list = 
             List.collect (fun f -> mapList f list) wrappedFunction
-        apply (pure add1) [1..3]
+        let (<*>) = apply
+
+        pure add1 <*> [1..3]
         // Return [2; 3; 4]       
 
-        apply (apply (pure add) []) [4..6]
+        pure add <*> [] <*> [4..6]
         // Return []
         
-        apply (apply (pure add) [1..3]) [4..6]
-        apply (mapList add [1..3]) [4..6]
+        pure add <*> [1..3] <*> [4..6]
         // Return [5; 6; 7; 6; 7; 8; 7; 8; 9]
 
         let b_if_a_else_c a b c = if a then b else c
-        let y_if_x_else_z x y z = apply (apply (apply (pure b_if_a_else_c) x) y) z
+        let y_if_x_else_z x y z = pure b_if_a_else_c <*> x <*> y <*> z
 
         y_if_x_else_z [true] ["y result"] ["z result"]
         // Return ["y result"]
         y_if_x_else_z [true] ["y result"] []
         // Return []
 
-        let y_if_x_else_z_lifted x y z = apply (pure (fun a -> if a then y else z)) x
+        let y_if_x_else_z_lifted x y z = pure (fun a -> if a then y else z) <*> x
         y_if_x_else_z_lifted [true] ["y result"] []
         // Return [["y result"]]
 
-        apply (apply (pure add) (apply (apply (pure add) [1; 2]) [3; 4])) [5; 6]
+        pure add <*> (pure add <*> [1; 2] <*> [3; 4]) <*> [5; 6]
         // [1 + 3 + 5; 1 + 3 + 6; 1 + 4 + 5; 1 + 4 + 6; 2 + 3 + 5; 2 + 3 + 6; 2 + 4 + 5; 2 + 4 + 6]
         // Return [9; 10; 10; 11; 10; 11; 11; 12]
 
     // Applicative.``An applicative functor is a function`` ()
     let ``An applicative functor is a function`` () = 
-        let mapFunction funtion1 funtion2 = funtion1 >> funtion2
+        let mapFunction funtion1 funtion2 x = funtion1 (funtion2 x)
         let pure x y = x // cons function, take de first of two parameters
 
         pure add1 None
@@ -49,34 +50,27 @@ module Applicative =
         pure add1 None 0
         // Return 1
 
-        let apply wrappedFunction func =  
-            fun x -> mapFunction func (wrappedFunction x) x
-            // fun x -> mapFunction (wrappedFunction x) func x
-            // Note: on his article, the author write: lambda x: \map(wrapped_fun(x), fun)(x)
-            // Article will give: fun x -> mapFunction (wrappedFunction x) func x     ('a -> 'a -> 'b) -> ('b -> 'c) -> 'a -> 'c  
-            // Here we have:      fun x -> mapFunction func (wrappedFunction x) x     ('a -> 'b -> 'c) -> ('a -> 'b) -> 'a -> 'c   
-            // They both return 3 for:  apply (pure add1) add1 1
-            // For: apply (apply (pure add) add1) add1 1  (and following examples)
-            // Mine: compose well and return 4
-            // Article: won't compose :(
+        let apply wrappedFunction func input =  
+            mapFunction (wrappedFunction input) func input
+        let (<*>) = apply
 
-        apply (pure add1) add1 1
+        (pure add1 <*> add1) 1
         // Return 3
-        apply (apply (pure add) add1) add1 1
+        (pure add <*> add1 <*> add1) 1
         // Return 4
 
         let add_x_y_z x y z = add (add x y) z
         add_x_y_z 1 2 3
         // Return 6
-        apply(apply(apply(pure add_x_y_z) add1) add1) add1 1
+        (pure add_x_y_z <*> add1 <*> add1 <*> add1) 1
         // Equivalent to: add_x_y_z (add1 1) (add1 1) (add1 1) = (1 + 1) + (1 + 1) + (1 + 1)
         // Return 6
 
-        apply (pure add_x_y_z) add1 1 2 3
+        (pure add_x_y_z <*> add1) 1 2 3
         // Equivalent to: add_x_y_z (add1 1) 2 3 = (add1 1) + 2 + 3 = (1 + 1) + 2 + 3
         // Return 7
 
-        apply (apply (apply (pure add_x_y_z) add1) (substract 1)) (substract 2) 2
+        ((pure add_x_y_z <*> add1) <*> (substract 1) <*> (substract 2)) 2
         // Equivalent to: add_x_y_z (add1 2) (substract 1 2) (substract 2 2) = (add1 2) + (substract 1 2) + (substract 2 2) = (1 + 2) + (1 - 2) + (2 - 2)
         // Return 2
         
@@ -85,7 +79,7 @@ module Applicative =
         let pluck_two (x:IDictionary<string, int>) = x.["two"]
         let pluck_three (x:IDictionary<string, int>) = x.["three"]
 
-        let new_add_x_y_z = apply (apply (apply (pure add_x_y_z) pluck_one) pluck_two) pluck_three
+        let new_add_x_y_z = pure add_x_y_z <*> pluck_one <*> pluck_two <*> pluck_three
         new_add_x_y_z (dict ["one", 1; "two", 2; "three", 3])
         // Return 6
         let extract_then_add_x_y_z x = add_x_y_z (pluck_one x) (pluck_two x) (pluck_three x)
