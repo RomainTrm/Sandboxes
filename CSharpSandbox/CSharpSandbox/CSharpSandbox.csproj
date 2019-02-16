@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Computations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Union.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
