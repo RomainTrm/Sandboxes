@@ -7,7 +7,7 @@ namespace CSharpSandbox
 {
     public abstract class Maybe<T>
     {
-        public abstract Maybe<TResult> Map<TResult>(
+        public abstract Maybe<TResult> Match<TResult>(
             Func<None<T>, Maybe<TResult>> none,
             Func<Just<T>, Maybe<TResult>> just);
 
@@ -28,7 +28,7 @@ namespace CSharpSandbox
             Value = value;
         }
 
-        public override Maybe<TResult> Map<TResult>(
+        public override Maybe<TResult> Match<TResult>(
             Func<None<T>, Maybe<TResult>> none,
             Func<Just<T>, Maybe<TResult>> just)
             => just(this);
@@ -65,7 +65,7 @@ namespace CSharpSandbox
 
     public sealed class None<T> : Maybe<T>, IEquatable<None<T>>
     {
-        public override Maybe<TResult> Map<TResult>(
+        public override Maybe<TResult> Match<TResult>(
             Func<None<T>, Maybe<TResult>> none,
             Func<Just<T>, Maybe<TResult>> just)
             => none(this);
@@ -92,25 +92,25 @@ namespace CSharpSandbox
         #endregion
     }
 
-    public static class MaybeExtensions
-    {
-        public static Maybe<TResult> Select<T, TResult>(
-            this Maybe<T> maybe,
-            Func<T, TResult> selector)
-        {
-            return maybe.Bind(just => new Just<TResult>(selector(just)));
-        }
+    //public static class MaybeExtensions
+    //{
+    //    public static Maybe<TResult> Select<T, TResult>(
+    //        this Maybe<T> maybe,
+    //        Func<T, TResult> selector)
+    //    {
+    //        return maybe.Bind(just => new Just<TResult>(selector(just)));
+    //    }
 
-        public static Maybe<TResult> SelectMany<T, TValue, TResult>(
-            this Maybe<T> source,
-            Func<T, Maybe<TValue>> valueSelector,
-            Func<T, TValue, TResult> resultSelector)
-        {
-            return source.Bind(sourceValue =>
-                valueSelector(sourceValue).Bind(just =>
-                    new Just<TResult>(resultSelector(sourceValue, just))));
-        }
-    }
+    //    public static Maybe<TResult> SelectMany<T, TValue, TResult>(
+    //        this Maybe<T> source,
+    //        Func<T, Maybe<TValue>> valueSelector,
+    //        Func<T, TValue, TResult> resultSelector)
+    //    {
+    //        return source.Bind(sourceValue =>
+    //            valueSelector(sourceValue).Bind(just =>
+    //                new Just<TResult>(resultSelector(sourceValue, just))));
+    //    }
+    //}
 
     public class Computation
     {
