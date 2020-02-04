@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingBufferSandbox", "RingBufferSandbox\RingBufferSandbox.csproj", "{51CA9F7D-D85B-4A21-84EE-045FBAC305FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51CA9F7D-D85B-4A21-84EE-045FBAC305FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51CA9F7D-D85B-4A21-84EE-045FBAC305FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51CA9F7D-D85B-4A21-84EE-045FBAC305FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51CA9F7D-D85B-4A21-84EE-045FBAC305FB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D25D04D2-92FD-4853-84AA-07A2C3DC649C}
+	EndGlobalSection
+EndGlobal
