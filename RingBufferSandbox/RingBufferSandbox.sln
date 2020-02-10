@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingBufferSandbox", "RingBufferSandbox\RingBufferSandbox.csproj", "{51CA9F7D-D85B-4A21-84EE-045FBAC305FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingBufferSandbox", "RingBufferSandbox\RingBufferSandbox.csproj", "{51CA9F7D-D85B-4A21-84EE-045FBAC305FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThreadSafeIncrement", "ThreadSafeIncrement\ThreadSafeIncrement.csproj", "{7CC6F572-4450-412B-BEEC-0297CAE05C0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{51CA9F7D-D85B-4A21-84EE-045FBAC305FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51CA9F7D-D85B-4A21-84EE-045FBAC305FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51CA9F7D-D85B-4A21-84EE-045FBAC305FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CC6F572-4450-412B-BEEC-0297CAE05C0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CC6F572-4450-412B-BEEC-0297CAE05C0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CC6F572-4450-412B-BEEC-0297CAE05C0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CC6F572-4450-412B-BEEC-0297CAE05C0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

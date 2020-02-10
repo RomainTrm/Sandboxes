@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace RingBufferSandbox
 {
-    class ParallelRun_3Push_1Pop
+    class ParallelRun_3Push_3Pop
     {
         private const int NbOfPush = 1000000;
 
@@ -14,19 +14,18 @@ namespace RingBufferSandbox
             var threadPushing1 = new Thread(() => Pushing(ringBuffer, 1));
             var threadPushing2 = new Thread(() => Pushing(ringBuffer, 2));
             var threadPushing3 = new Thread(() => Pushing(ringBuffer, 3));
-            var threadPopping = new Thread(() => Popping(ringBuffer));
+            var threadPopping1 = new Thread(() => Popping(ringBuffer, 1));
+            var threadPopping2 = new Thread(() => Popping(ringBuffer, 2));
+            var threadPopping3 = new Thread(() => Popping(ringBuffer, 3));
 
-            threadPopping.Start();
+            threadPopping1.Start();
+            threadPopping2.Start();
+            threadPopping3.Start();
             threadPushing1.Start();
             threadPushing2.Start();
             threadPushing3.Start();
 
-            Thread.Sleep(800);
-
-            threadPopping.Interrupt();
-            threadPushing1.Interrupt();
-            threadPushing2.Interrupt();
-            threadPushing3.Interrupt();
+            Thread.Sleep(500);
         }
 
         private static void Pushing(IRingBuffer ringBuffer, int threadNumber)
@@ -53,10 +52,10 @@ namespace RingBufferSandbox
             Console.WriteLine($"Thread {threadNumber}: Pushing done in {stopwatch.ElapsedMilliseconds} milliseconds");
         }
 
-        private static void Popping(IRingBuffer ringBuffer)
+        private static void Popping(IRingBuffer ringBuffer, int threadNumber)
         {
-            Console.WriteLine($"Popping thread: {Thread.CurrentThread.ManagedThreadId}");
-            Console.WriteLine("Start popping");
+            Console.WriteLine($"Popping thread {threadNumber}: {Thread.CurrentThread.ManagedThreadId}");
+            Console.WriteLine($"Thread {threadNumber}: Start popping");
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -88,15 +87,8 @@ namespace RingBufferSandbox
             finally
             {
                 stopwatch.Stop();
-                Console.WriteLine($"Popping done in {stopwatch.ElapsedMilliseconds} milliseconds");
-
-                // Doesn't pop every elements due to push concurrency (NoConcurrency implementation), thread should write on the same slot
-                // Pop 3 000 000 elements as expected with write concurrency implementation
-
-                // Sometimes pop only 1 951 424 elements, correspond to 3 000 000 - 1048576 (ring size)
-                // Issue : Read misses one complete tour of the ring
-                
-                Console.WriteLine($"Nb of element popped : {nbOfElementsPopped}"); 
+                Console.WriteLine($"Thread {threadNumber}: Popping done in {stopwatch.ElapsedMilliseconds} milliseconds");
+                Console.WriteLine($"Thread {threadNumber}: Nb of element popped : {nbOfElementsPopped}"); 
             }
         }
     }

@@ -9,21 +9,24 @@ namespace RingBufferSandbox
     {
         private const int NbOfPush = 1000000;
 
-        public static void Parallel()
+        public static void Parallel(IRingBuffer ringBuffer)
         {
-            var ringBuffer = new RingBuffer(1048576);
-
             var threadPushing = new Thread(() => Pushing(ringBuffer));
-            var threadPoping = new Thread(() => Poping(ringBuffer));
+            var threadPopping = new Thread(() => Popping(ringBuffer));
 
             threadPushing.Start();
-            threadPoping.Start();
+            threadPopping.Start();
 
-            Thread.Sleep(200);
+            Thread.Sleep(500);
+
+            threadPopping.Interrupt();
+            threadPushing.Interrupt();
         }
 
-        private static void Pushing(RingBuffer ringBuffer)
+        private static void Pushing(IRingBuffer ringBuffer)
         {
+            Console.WriteLine($"Pushing thread: {Thread.CurrentThread.ManagedThreadId}");
+
             Console.WriteLine("Start pushing");
             Console.WriteLine($"Nb of elements to push: {NbOfPush}");
             var stopwatch = new Stopwatch();
@@ -38,8 +41,9 @@ namespace RingBufferSandbox
             Console.WriteLine($"Pushing done in {stopwatch.ElapsedMilliseconds} milliseconds");
         }
 
-        private static void Poping(RingBuffer ringBuffer)
+        private static void Popping(IRingBuffer ringBuffer)
         {
+            Console.WriteLine($"Popping thread: {Thread.CurrentThread.ManagedThreadId}");
             Console.WriteLine("Start popping");
 
             var stopwatch = new Stopwatch();

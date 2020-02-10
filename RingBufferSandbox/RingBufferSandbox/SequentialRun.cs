@@ -6,10 +6,8 @@ namespace RingBufferSandbox
 {
     static class SequentialRun
     {
-        public static void Sequential()
+        public static void Sequential(IRingBuffer ringBuffer)
         {
-            var ringBuffer = new RingBuffer(1048576);
-
             Console.WriteLine("Start pushing");
 
             var stopwatch = new Stopwatch();
